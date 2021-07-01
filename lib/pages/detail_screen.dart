@@ -32,24 +32,25 @@ class _DetailScreenState extends State<DetailScreen> {
 
   _DetailScreenState(this.quantity);
 
-  // List<Cart> _cartList = List<Cart>();
-
   addToCart() {
-    // return CartPage.hai(name: widget.menu, orderAmount: orderAmount, image: widget.menu);
-    if (orderAmount != 0) {
+    if (orderAmount > 0) {
       if (cartList.contains(widget.menu)) {
         setState(() {
-          quantity = orderAmount;
+          itemQuantity[widget.menu] = orderAmount;
+          itemPrice[widget.menu] = orderAmount * widget.menu.price;
+
         });
         DetailScreen.orderAmount = orderAmount + DetailScreen.orderAmount;
       } else {
         cartList.add(widget.menu);
-        price[widget.menu] = orderAmount;
+        itemQuantity[widget.menu] = orderAmount;
+        itemPrice[widget.menu] = orderAmount * widget.menu.price;
       }
       setState(() {
         Cart();
       });
 
+      print (itemQuantity[widget.menu]);
       Navigator.pop(context);
     } else {
       Fluttertoast.showToast(msg: "Please Enter Order Quantity!");
@@ -169,7 +170,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         setState(() {
                           orderAmount++;
                           widget.stock--;
-                          print(price);
+                          print(itemQuantity);
                         });
                       },
                       icon: Icon(
@@ -182,6 +183,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ElevatedButton(
               onPressed: () {
                 addToCart();
+                priceList.add(orderAmount * widget.menu.price);
                 print(orderAmount.toString());
               },
               style: ButtonStyle(

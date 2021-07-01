@@ -13,9 +13,13 @@ class CartModel {
 }
 
 // var cart = CartModel(menu: menu, orderAmount: orderAmount)
-Map<dynamic, int> price = {};
+Map<dynamic, int> itemQuantity = {};
+Map<dynamic, int> itemPrice = {};
 
 var cartList = <MenuModel>[];
+
+List<int> priceList = [];
+
 var cartOrderAmount = DetailScreen.orderAmount;
 // var orderAmount = CartModel(menu: MenuModel.menu).orderAmount;
 // var orderAmount = DetailScreen().orderAmount;
