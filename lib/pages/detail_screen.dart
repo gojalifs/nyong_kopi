@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nyong_kopi/model/cart_model.dart';
 import 'package:nyong_kopi/model/menu_model.dart';
-import 'package:nyong_kopi/pages/cart.dart';
+import 'package:nyong_kopi/pages/cart_screen.dart';
 import 'package:nyong_kopi/pages/description_page.dart';
 
 // ignore: import_of_legacy_library_into_null_safe
@@ -34,13 +34,14 @@ class _DetailScreenState extends State<DetailScreen> {
 
   addToCart() {
     if (orderAmount > 0) {
+      int? _qty = itemQuantity[widget.menu];
       if (cartList.contains(widget.menu)) {
         setState(() {
-          itemQuantity[widget.menu] = orderAmount;
-          itemPrice[widget.menu] = orderAmount * widget.menu.price;
-
+          if (_qty != null) {
+            itemQuantity[widget.menu] = _qty + orderAmount;
+          }
         });
-        DetailScreen.orderAmount = orderAmount + DetailScreen.orderAmount;
+        print('sudah ' + itemQuantity[widget.menu].toString());
       } else {
         cartList.add(widget.menu);
         itemQuantity[widget.menu] = orderAmount;
@@ -50,7 +51,7 @@ class _DetailScreenState extends State<DetailScreen> {
         Cart();
       });
 
-      print (itemQuantity[widget.menu]);
+      print(itemQuantity[widget.menu]);
       Navigator.pop(context);
     } else {
       Fluttertoast.showToast(msg: "Please Enter Order Quantity!");
@@ -71,13 +72,16 @@ class _DetailScreenState extends State<DetailScreen> {
       child: Container(
         width: 200,
         height: 50,
-        child: Text(
-          "Swipe Up For Detail",
-          style: TextStyle(
-            color: Colors.black38,
-            fontSize: 15,
+        child: Material(
+          child: Text(
+            "Swipe Up For Detail",
+            style: TextStyle(
+              color: Colors.black38,
+              fontSize: 15,
+
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
         ),
       ),
       body: Scaffold(

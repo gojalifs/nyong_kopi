@@ -9,5 +9,5 @@ class RecommendationBeverages {
 
 
 
-var recommended = recom.asMap();
+var recommended = recommendations.asMap();
 var recommendedMenu = recommended.values.toList();

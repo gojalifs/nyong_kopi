@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:nyong_kopi/model/cart_model.dart';
-import 'package:nyong_kopi/pages/cart.dart';
+import 'package:nyong_kopi/pages/cart_screen.dart';
 import 'package:nyong_kopi/pages/device_view/mobile_view.dart';
 import 'package:nyong_kopi/pages/menu_page.dart';
 
