@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fajar.nyongkopi.nyong_kopi">
    <application
-        android:label="nyong_kopi"
+        android:label="Nyong Coffee"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

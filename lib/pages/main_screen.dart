@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:nyong_kopi/model/cart_model.dart';
 import 'package:nyong_kopi/pages/cart_screen.dart';
-import 'package:nyong_kopi/pages/device_view/mobile_view.dart';
+import 'package:nyong_kopi/pages/history_page.dart';
+import 'package:nyong_kopi/pages/home_screen.dart';
 import 'package:nyong_kopi/pages/menu_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,49 +25,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic tabPage = [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-              if (constraints.maxWidth <= 600) {
-                return MobileView();
-              } else if (constraints.maxWidth <= 1200) {
-                return Text(
-                    "Tampilan Web1 + Size ${MediaQuery.of(context).size.width}");
-              } else {
-                return Text(
-                    "Tampilan Web2 + Size ${MediaQuery.of(context).size.width}");
-              }
-            }),
-            // MobileView(),
-          ],
-        ),
-      ),
-      MenuPage(),
-      Cart(),
-    ];
-
     return Scaffold(
         appBar: _selectedIndex == 1
-            ? AppBar(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                title: Text(
-                  "Pick Your Favourite Menu",
-                  style: TextStyle(
-                    fontFamily: 'baloo',
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-            : null,
-        backgroundColor: Color.fromRGBO(255, 255, 255, 15),
+            ? buildAppBar('Pick Your Favourite Menu')
+            : _selectedIndex == 2
+                ? buildAppBar('Cart')
+                : _selectedIndex == 3
+                    ? buildAppBar('Order History')
+                    : null,
+        backgroundColor: Theme.of(context).backgroundColor,
         bottomNavigationBar: BottomNavigationBar(
             currentIndex: _selectedIndex,
+            selectedItemColor: Theme.of(context).primaryColor,
+            unselectedItemColor: Colors.black45,
+            showUnselectedLabels: true,
             onTap: _onTap,
             items: [
               BottomNavigationBarItem(
@@ -97,10 +69,54 @@ class _HomePageState extends State<HomePage> {
                 ]),
                 label: "Cart",
               ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.history), label: "Order History")
             ]),
         body: SafeArea(
-            child: ListView(
-                shrinkWrap: true,
-                children: [tabPage.elementAt(_selectedIndex)])));
+            child: ListView(shrinkWrap: true, children: [
+          buildLayoutBuilder(_selectedIndex),
+        ])));
+  }
+
+  LayoutBuilder buildLayoutBuilder(var page) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (constraints.maxWidth >= 1025) {
+        return bottomPage(page, context, 5);
+      } else if (constraints.maxWidth >= 820) {
+        return bottomPage(page, context, 4);
+      } else if (constraints.maxWidth >= 620) {
+        return bottomPage(page, context, 3);
+      } else {
+        return bottomPage(page, context, 2);
+      }
+    });
+  }
+
+  Widget bottomPage(page, BuildContext context, int gridCount) {
+    if (page == 0) {
+      return HomeScreen(gridCount: gridCount);
+    } else if (page == 1) {
+      return MenuPage();
+    } else if (page == 2) {
+      return Cart();
+    } else {
+      return HistoryScreen();
+    }
+  }
+
+  AppBar buildAppBar(String title) {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'baloo',
+          fontSize: 30,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
   }
 }

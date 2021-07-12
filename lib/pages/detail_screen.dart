@@ -4,7 +4,6 @@ import 'package:nyong_kopi/model/cart_model.dart';
 import 'package:nyong_kopi/model/menu_model.dart';
 import 'package:nyong_kopi/pages/cart_screen.dart';
 import 'package:nyong_kopi/pages/description_page.dart';
-
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:swipe_up/swipe_up.dart';
 
@@ -23,14 +22,11 @@ class DetailScreen extends StatefulWidget {
       this.quantity = 0});
 
   @override
-  _DetailScreenState createState() => _DetailScreenState(this.quantity);
+  _DetailScreenState createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
   int orderAmount = 0;
-  int quantity;
-
-  _DetailScreenState(this.quantity);
 
   addToCart() {
     if (orderAmount > 0) {
@@ -41,7 +37,6 @@ class _DetailScreenState extends State<DetailScreen> {
             itemQuantity[widget.menu] = _qty + orderAmount;
           }
         });
-        print('sudah ' + itemQuantity[widget.menu].toString());
       } else {
         cartList.add(widget.menu);
         itemQuantity[widget.menu] = orderAmount;
@@ -51,7 +46,6 @@ class _DetailScreenState extends State<DetailScreen> {
         Cart();
       });
 
-      print(itemQuantity[widget.menu]);
       Navigator.pop(context);
     } else {
       Fluttertoast.showToast(msg: "Please Enter Order Quantity!");
@@ -78,130 +72,127 @@ class _DetailScreenState extends State<DetailScreen> {
             style: TextStyle(
               color: Colors.black38,
               fontSize: 15,
-
             ),
             textAlign: TextAlign.center,
           ),
         ),
       ),
       body: Scaffold(
-        appBar: AppBar(
-          title: Text("Item Detail"),
+          appBar: AppBar(
+            title: Text("Item Detail"),
+          ),
+          body:
+
+              buildPhoneView(context)
+
+          ),
+    );
+  }
+
+  Column buildPhoneView(BuildContext context) {
+    return Column(
+      children: [
+        Hero(
+          tag: widget.heroTag,
+          child: Container(
+            padding: EdgeInsets.only(top: 20),
+            width: 300,
+            height: 300,
+            child: Image(
+              image: AssetImage(widget.menu.assetsImage),
+            ),
+          ),
         ),
-        body: Column(
+        SizedBox(
+          height: 20,
+        ),
+        Text(
+          widget.menu.menuName,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: 'baloo',
+            fontSize: 30,
+          ),
+        ),
+        SizedBox(
+          height: 25,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Hero(
-                tag: widget.heroTag,
-                child: Image.asset(widget.menu.assetsImage)),
             SizedBox(
-              height: 20,
+              width: 50,
+              height: 50,
+              child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      if (orderAmount > 0) {
+                        orderAmount--;
+                        widget.stock++;
+                      }
+                    });
+                  },
+                  padding: EdgeInsets.all(0),
+                  splashRadius: 20,
+                  icon: Icon(
+                    Icons.remove_circle_outline,
+                    size: 30,
+                  )),
             ),
-            Text(
-              widget.menu.menuName,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: 'baloo',
-                fontSize: 30,
-              ),
-            ),
-            // Container(
-            //   width: MediaQuery.of(context).size.width - 125,
-            //   child: Text(
-            //     widget.menu.description,
-            //     style: TextStyle(fontSize: 20),
-            //     textAlign: TextAlign.justify,
-            //   ),
-            // ),
-            SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (orderAmount > 0) {
-                            orderAmount--;
-                            widget.stock++;
-                          }
-                        });
-                      },
-                      padding: EdgeInsets.all(0),
-                      splashRadius: 20,
-                      icon: Icon(
-                        Icons.remove_circle_outline,
-                        size: 30,
-                      )),
-                ),
-                Container(
-                  width: 80,
-                  height: 35,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(
-                          color: Theme.of(context).primaryColor, width: 3)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // TextField(
-                      //   textAlign: TextAlign.center,
-                      //   controller: _addToCartController,
-                      //
-                      // ),
-                      Text(
-                        // 'Amount of Your Order is ' +
-                        orderAmount.toString(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+            Container(
+              width: 80,
+              height: 35,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                      color: Theme.of(context).primaryColor, width: 3)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    // 'Amount of Your Order is ' +
+                    orderAmount.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: IconButton(
-                      padding: EdgeInsets.all(0),
-                      splashRadius: 20,
-                      onPressed: () {
-                        setState(() {
-                          orderAmount++;
-                          widget.stock--;
-                          print(itemQuantity);
-                        });
-                      },
-                      icon: Icon(
-                        Icons.add_circle_outline,
-                        size: 30,
-                      )),
-                ),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () {
-                addToCart();
-                priceList.add(orderAmount * widget.menu.price);
-                print(orderAmount.toString());
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor),
+                ],
               ),
-              child: Text("Add To Cart"),
             ),
-            Text(
-              "Stock Available : ${widget.stock.toString()}",
+            SizedBox(
+              height: 50,
+              width: 50,
+              child: IconButton(
+                  padding: EdgeInsets.all(0),
+                  splashRadius: 20,
+                  onPressed: () {
+                    setState(() {
+                      orderAmount++;
+                      widget.stock--;
+                    });
+                  },
+                  icon: Icon(
+                    Icons.add_circle_outline,
+                    size: 30,
+                  )),
             ),
           ],
         ),
-      ),
+        ElevatedButton(
+          onPressed: () {
+            addToCart();
+            priceList.add(orderAmount * widget.menu.price);
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(context).primaryColor),
+          ),
+          child: Text("Add To Cart"),
+        ),
+
+      ],
     );
   }
 }

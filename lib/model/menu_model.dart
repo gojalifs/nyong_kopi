@@ -3,8 +3,6 @@ class MenuModel {
   double rating;
   int price, stock;
 
-  // int orderAmount;
-
   MenuModel(
       {required this.assetsImage,
       required this.menuName,
@@ -299,7 +297,6 @@ var merchList = [
           ' that complement our bold new Teavana by Starbucks packaged teas.',
       rating: 4,
       stock: 10),
-
   MenuModel(
       assetsImage: 'images/logo_tumbler_black.jpeg',
       menuName: 'Logo Tumbler Black',
@@ -330,9 +327,4 @@ var merchList = [
       stock: 10),
 ];
 
-var recommendations = [
-  basicBeveragesList[1],
-  basicBeveragesList[3],
-  basicBeveragesList[4],
-  basicBeveragesList[6]
-];
+List categoriesTab = ['Beverages', 'Fresh Food', 'Whole Bean', 'Merchandise'];

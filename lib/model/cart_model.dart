@@ -6,13 +6,8 @@ class CartModel {
   DetailScreen orderAmount;
 
   CartModel({required this.menu, required this.orderAmount});
-
-//   void cartAmount(int orderAmount) {
-//     this.orderAmount = orderAmount;
-//   }
 }
 
-// var cart = CartModel(menu: menu, orderAmount: orderAmount)
 Map<dynamic, int> itemQuantity = {};
 Map<dynamic, int> itemPrice = {};
 
@@ -21,5 +16,3 @@ var cartList = <MenuModel>[];
 List<int> priceList = [];
 
 var cartOrderAmount = DetailScreen.orderAmount;
-// var orderAmount = CartModel(menu: MenuModel.menu).orderAmount;
-// var orderAmount = DetailScreen().orderAmount;

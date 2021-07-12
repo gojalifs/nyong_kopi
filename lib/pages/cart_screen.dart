@@ -1,8 +1,14 @@
+import 'dart:ui';
+
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:nyong_kopi/model/cart_model.dart';
+import 'package:nyong_kopi/model/history_model.dart';
 import 'package:nyong_kopi/model/menu_model.dart';
 
 class Cart extends StatefulWidget {
@@ -14,268 +20,359 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   CountDownController _countDownController = CountDownController();
-
-  void onPress() {
-    setState(() {});
-  }
-
-  var listView;
   var orderAmount = 0, stock;
   var total;
 
+  final formatter = NumberFormat("#,###");
+
   List _allQuantity = itemQuantity.values.toList();
   List<int> _listOfPrice = itemPrice.values.toList();
-  int _totalPrice = 0;
+
+  var timeNow = DateTime.now().hour;
+  int hour = 21;
 
   int sumPrice() {
     int plus = _listOfPrice.reduce((a, b) => a + b);
-    print(plus.toString());
-    return plus;
+    double totalPrice = plus.toDouble();
+    if (timeNow <= hour) {
+      totalPrice = plus.toDouble() * 0.5;
+      totalPrice.toInt();
+    }
+    return totalPrice.toInt();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (cartList.length > 0) {
-      listView = ListView.builder(
-          itemCount: cartList.length,
-          primary: false,
-          shrinkWrap: true,
-          itemBuilder: (BuildContext context, int index) {
-            final MenuModel cartIndex = cartList[index];
-            int quantity = _allQuantity[index];
+    return Padding(
+      padding: MediaQuery.of(context).size.width >= 650
+          ? EdgeInsets.only(left: 100, right: 100)
+          : EdgeInsets.only(left: 10, right: 10),
+      child: Card(
+        child: Center(
+          child: Column(
+            children: [
+              if (cartList.isNotEmpty)
+                _buildCartListView()
+              else
+                Column(
+                  children: [
+                    Icon(
+                      Icons.production_quantity_limits,
+                      size: 75,
+                    ),
+                    Text(
+                      "Your Cart Is Empty",
+                      style: TextStyle(fontSize: 25),
+                    ),
+                  ],
+                ),
+              cartList.isNotEmpty ? buildPay(context) : SizedBox.shrink(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-            return Card(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                      height: 75,
-                      width: 75,
-                      child: Image(
-                        image: AssetImage(cartIndex.assetsImage),
-                        fit: BoxFit.cover,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0, right: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(cartIndex.menuName),
-                        Text('sub price ' + cartIndex.price.toString()),
-                        Text("Total Price = " + _listOfPrice[index].toString()),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        if (_allQuantity[index] > 0) {
-                                          _allQuantity[index]--;
-                                          quantity = _allQuantity[index];
-                                          itemQuantity[cartIndex] = quantity;
-                                          print('item quantity ' +
-                                              quantity.toString());
-                                          _listOfPrice[index] =
-                                              _allQuantity[index] *
-                                                  cartIndex.price;
+  ListView _buildCartListView() {
+    return ListView.separated(
+        separatorBuilder: (BuildContext context, int index) => Divider(
+              height: 10,
+              thickness: 5,
+            ),
+        itemCount: cartList.length,
+        primary: false,
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          final MenuModel cartIndex = cartList[index];
+          int quantity = _allQuantity[index];
 
-                                          print('the total price is ' +
-                                              _totalPrice.toString());
-                                          print('Quantity is ' +
-                                              _allQuantity.toString());
-                                          print('price is ' +
-                                              _listOfPrice[index].toString());
-                                        }
-                                      });
-                                    },
-                                    padding: EdgeInsets.all(0),
-                                    splashRadius: 20,
-                                    icon: Icon(
-                                      Icons.remove_circle_outline,
-                                      size: 30,
-                                    ))),
-                            Container(
-                              width: 80,
-                              height: 35,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
-                                  border: Border.all(
-                                      color: Theme.of(context).primaryColor,
-                                      width: 3)),
-                              child: Text(
-                                quantity.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 50,
-                              width: 50,
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                  height: 85,
+                  width: 85,
+                  child: Image(
+                    image: AssetImage(cartIndex.assetsImage),
+                    fit: BoxFit.cover,
+                  )),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: SizedBox(
+                  width: 200,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          cartIndex.menuName,
+                          overflow: TextOverflow.clip,
+                          maxLines: 2,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        'Rp' + formatter.format(cartIndex.price).toString(),
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.red,
+                          fontFamily: 'baloo',
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                              width: 25,
+                              height: 25,
                               child: IconButton(
-                                  padding: EdgeInsets.all(0),
-                                  splashRadius: 20,
                                   onPressed: () {
                                     setState(() {
-                                      _allQuantity[index]++;
-                                      quantity = _allQuantity[index];
-                                      itemQuantity[cartIndex] = quantity;
-                                      print('item quantity ' +
-                                          quantity.toString());
-                                      _totalPrice = quantity * cartIndex.price;
-                                      print(_totalPrice);
-                                      _listOfPrice[index] = _totalPrice;
-                                      print('price is ' +
-                                          _listOfPrice[index].toString());
+                                      if (_allQuantity[index] > 0) {
+                                        _allQuantity[index]--;
+                                        quantity = _allQuantity[index];
+                                        itemQuantity[cartIndex] = quantity;
+                                        _listOfPrice[index] =
+                                            _allQuantity[index] *
+                                                cartIndex.price;
+                                      }
                                     });
                                   },
+                                  padding: EdgeInsets.all(0),
+                                  splashRadius: 20,
                                   icon: Icon(
-                                    Icons.add_circle_outline,
-                                    size: 30,
-                                  )),
+                                    Icons.remove_circle_outline,
+                                    size: 25,
+                                  ))),
+                          Container(
+                            width: 60,
+                            margin: EdgeInsets.only(left: 5, right: 5),
+                            height: 25,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 3)),
+                            child: Text(
+                              quantity.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return CupertinoAlertDialog(
-                                title: Text("Remove From Cart?"),
-                                actions: [
-                                  CupertinoDialogAction(
-                                    child: Text(
-                                      "Yes",
-                                      style: TextStyle(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        itemQuantity.remove(cartList[index]);
-                                        cartList.removeAt(index);
-                                        _listOfPrice.removeAt(index);
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  CupertinoDialogAction(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text(
-                                      "No",
-                                      style: TextStyle(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      icon: Icon(Icons.delete_forever)),
-                ],
-              ),
-            );
-          });
-    }
+                          ),
+                          SizedBox(
+                            height: 25,
+                            width: 25,
+                            child: IconButton(
+                                padding: EdgeInsets.all(0),
+                                splashRadius: 20,
+                                onPressed: () {
+                                  setState(() {
+                                    _allQuantity[index]++;
+                                    quantity = _allQuantity[index];
+                                    itemQuantity[cartIndex] = quantity;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        cartList.isNotEmpty
-            ? listView
-            : Center(child: Text("Your Cart Is Empty")),
-        cartList.isNotEmpty
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      // Container(
-                      //   child:
-                      //   Text(
-                      //     total.toString(),
-                      //   ),
-                      // ),
-                      Text(
-                        'Total To Pay : ' + sumPrice().toString(),
+                                    _listOfPrice[index] =
+                                        _allQuantity[index] * cartIndex.price;
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.add_circle_outline,
+                                  size: 25,
+                                )),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      onPress();
-                      sumPrice();
-                      // _countDownController.start();
-
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return CupertinoAlertDialog(
-                              title: Text("Confirm Your Order . . . "),
-                              actions: [
-                                CupertinoDialogAction(
-                                  child: Text(
-                                    "Cancel Order",
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                )
-                              ],
-                              content: CircularCountDownTimer(
-                                controller: _countDownController,
-                                autoStart: true,
-                                width: 25,
-                                height: 25,
-                                duration: 5,
-                                fillColor: Theme.of(context).primaryColor,
-                                ringColor: Colors.black26,
-                                isReverse: true,
-                                onStart: () {
-                                  print("Started...");
-                                },
-                                onComplete: () {
-                                  pop();
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              "We are working on your order, "
-                                              "you can now enjoy your netflix"
-                                              " while we are delivering your order"),
-                                        );
-                                      });
+                ),
+              ),
+              IconButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CupertinoAlertDialog(
+                            title: Text("Remove From Cart?"),
+                            actions: [
+                              CupertinoDialogAction(
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    itemQuantity.remove(cartList[index]);
+                                    cartList.removeAt(index);
+                                    _listOfPrice.removeAt(index);
+                                  });
+                                  Navigator.pop(context);
                                 },
                               ),
-                            );
-                          });
-                    },
-                    child: Text(
-                      "Pay Now",
-                    ),
+                              CupertinoDialogAction(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  icon: Icon(Icons.delete_forever)),
+            ],
+          );
+        });
+  }
+
+  Column buildPay(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Divider(
+          thickness: 3,
+        ),
+        FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: discountCalc(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 7),
+                child: ElevatedButton(
+                  onPressed: () {
+                    sumPrice();
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CupertinoAlertDialog(
+                            title: Text("Confirm Your Order . . . "),
+                            actions: [
+                              CupertinoDialogAction(
+                                child: Text(
+                                  "Cancel Order",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              )
+                            ],
+                            content: CircularCountDownTimer(
+                              controller: _countDownController,
+                              autoStart: true,
+                              width: 25,
+                              height: 25,
+                              duration: 5,
+                              fillColor: Theme.of(context).primaryColor,
+                              ringColor: Colors.black26,
+                              isReverse: true,
+                              onStart: () {
+                                print("Started...");
+                              },
+                              onComplete: () {
+                                historyList.addAll(cartList);
+                                cartList.clear();
+                                itemQuantity.clear();
+                                itemPrice.clear();
+                                pop();
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                            "We are working on your order, "
+                                            "you can now enjoy your netflix"
+                                            " while we are delivering your order"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                setState(() {});
+                                              },
+                                              child: Text('OK')),
+                                        ],
+                                      );
+                                    });
+                              },
+                            ),
+                          );
+                        });
+                  },
+                  child: Text(
+                    "Pay Now",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                   ),
-                ],
-              )
-            : SizedBox.shrink(),
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
+  }
+
+  List<Widget> discountCalc() {
+    return [
+      Text(
+        'Total To Pay : ',
+        style: TextStyle(
+          fontSize: 20,
+        ),
+      ),
+      if (timeNow < hour)
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Text(
+                'Rp' + formatter.format(sumPrice()).toString(),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Text(
+              'Rp' + formatter.format(sumPrice() * 2).toString(),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black26,
+                decoration: TextDecoration.lineThrough,
+              ),
+            ),
+          ],
+        )
+      else
+        Text(
+          'Rp' + formatter.format(sumPrice()).toString(),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+    ];
   }
 
   pop() {
