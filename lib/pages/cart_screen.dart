@@ -29,7 +29,7 @@ class _CartState extends State<Cart> {
   List<int> _listOfPrice = itemPrice.values.toList();
 
   var timeNow = DateTime.now().hour;
-  int hour = 21;
+  int hour = 10;
 
   int sumPrice() {
     int plus = _listOfPrice.reduce((a, b) => a + b);
