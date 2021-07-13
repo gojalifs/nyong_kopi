@@ -257,7 +257,7 @@ var freshFoodList = [
 
 var wholeBeanList = [
   MenuModel(
-      assetsImage: 'images/dark_sumatra.jpg',
+      assetsImage: 'images/dark_sumatra.png',
       menuName: 'Sumatra',
       price: 200000,
       description:
@@ -267,7 +267,7 @@ var wholeBeanList = [
       rating: 4.5,
       stock: 9),
   MenuModel(
-      assetsImage: 'images/italian_roast.jpg',
+      assetsImage: 'images/italian_roast.png',
       menuName: 'Italian Roast',
       price: 250000,
       description:
@@ -276,7 +276,7 @@ var wholeBeanList = [
       rating: 4,
       stock: 10),
   MenuModel(
-      assetsImage: 'images/kenya.jpg',
+      assetsImage: 'images/kenya.png',
       menuName: 'Kenya',
       price: 240000,
       description:

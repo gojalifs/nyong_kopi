@@ -60,16 +60,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             //greetings
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+            FittedBox(
+              fit: BoxFit.fitWidth,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(MediaQuery.of(context).size.width.toString()),
                     Text("Good $greetings, Lisa",
                         style: TextStyle(
                           fontFamily: 'baloo',
-                          fontSize: 30,
                           fontWeight: FontWeight.bold,
+                          fontSize: 15,
                         )),
                   ]),
             ),
@@ -84,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(10),
           child: Container(
             height: 200,
             child: ImageSlideshow(

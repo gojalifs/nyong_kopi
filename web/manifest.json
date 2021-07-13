@@ -1,6 +1,6 @@
 {
-    "name": "nyong_kopi",
-    "short_name": "nyong_kopi",
+    "name": "Nyong Coffee",
+    "short_name": "Nyong Coffee",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

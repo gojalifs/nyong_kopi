@@ -91,15 +91,19 @@ class _CartState extends State<Cart> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              SizedBox(
-                  height: 85,
-                  width: 85,
-                  child: Image(
-                    image: AssetImage(cartIndex.assetsImage),
-                    fit: BoxFit.cover,
-                  )),
-              Padding(
-                padding: const EdgeInsets.all(10),
+              Expanded(
+                flex: 1,
+                child: SizedBox(
+                    height: 85,
+                    width: 85,
+                    child: Image(
+                      image: AssetImage(cartIndex.assetsImage),
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              Expanded(flex: 1, child: SizedBox()),
+              Expanded(
+                flex: 3,
                 child: SizedBox(
                   width: 200,
                   child: Column(
@@ -195,44 +199,47 @@ class _CartState extends State<Cart> {
                   ),
                 ),
               ),
-              IconButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return CupertinoAlertDialog(
-                            title: Text("Remove From Cart?"),
-                            actions: [
-                              CupertinoDialogAction(
-                                child: Text(
-                                  "Yes",
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor),
+              Expanded(
+                flex: 1,
+                child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CupertinoAlertDialog(
+                              title: Text("Remove From Cart?"),
+                              actions: [
+                                CupertinoDialogAction(
+                                  child: Text(
+                                    "Yes",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      itemQuantity.remove(cartList[index]);
+                                      cartList.removeAt(index);
+                                      _listOfPrice.removeAt(index);
+                                    });
+                                    Navigator.pop(context);
+                                  },
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    itemQuantity.remove(cartList[index]);
-                                    cartList.removeAt(index);
-                                    _listOfPrice.removeAt(index);
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              CupertinoDialogAction(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  "No",
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor),
+                                CupertinoDialogAction(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "No",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                  icon: Icon(Icons.delete_forever)),
+                              ],
+                            );
+                          });
+                    },
+                    icon: Icon(Icons.delete_forever)),
+              ),
             ],
           );
         });
@@ -240,8 +247,8 @@ class _CartState extends State<Cart> {
 
   Column buildPay(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Divider(
           thickness: 3,

@@ -4,6 +4,7 @@ import 'package:nyong_kopi/model/cart_model.dart';
 import 'package:nyong_kopi/model/menu_model.dart';
 import 'package:nyong_kopi/pages/cart_screen.dart';
 import 'package:nyong_kopi/pages/description_page.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:swipe_up/swipe_up.dart';
 
@@ -67,6 +68,7 @@ class _DetailScreenState extends State<DetailScreen> {
         width: 200,
         height: 50,
         child: Material(
+          color: Color.fromRGBO(255, 255, 255, 255),
           child: Text(
             "Swipe Up For Detail",
             style: TextStyle(
@@ -81,104 +83,103 @@ class _DetailScreenState extends State<DetailScreen> {
           appBar: AppBar(
             title: Text("Item Detail"),
           ),
-          body:
-
-              buildPhoneView(context)
-
-          ),
+          body: buildPhoneView(context)),
     );
   }
 
   Column buildPhoneView(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Hero(
-          tag: widget.heroTag,
-          child: Container(
-            padding: EdgeInsets.only(top: 20),
-            width: 300,
-            height: 300,
-            child: Image(
-              image: AssetImage(widget.menu.assetsImage),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Text(
-          widget.menu.menuName,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontFamily: 'baloo',
-            fontSize: 30,
-          ),
-        ),
-        SizedBox(
-          height: 25,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      if (orderAmount > 0) {
-                        orderAmount--;
-                        widget.stock++;
-                      }
-                    });
-                  },
-                  padding: EdgeInsets.all(0),
-                  splashRadius: 20,
-                  icon: Icon(
-                    Icons.remove_circle_outline,
-                    size: 30,
-                  )),
-            ),
-            Container(
-              width: 80,
-              height: 35,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                      color: Theme.of(context).primaryColor, width: 3)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    // 'Amount of Your Order is ' +
-                    orderAmount.toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+        Expanded(
+          flex: 4,
+          child: Hero(
+            tag: widget.heroTag,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Image(
+                image: AssetImage(widget.menu.assetsImage),
               ),
             ),
-            SizedBox(
-              height: 50,
-              width: 50,
-              child: IconButton(
-                  padding: EdgeInsets.all(0),
-                  splashRadius: 20,
-                  onPressed: () {
-                    setState(() {
-                      orderAmount++;
-                      widget.stock--;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.add_circle_outline,
-                    size: 30,
-                  )),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Text(
+            widget.menu.menuName,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: 'baloo',
+              fontSize: 30,
             ),
-          ],
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 50,
+                height: 50,
+                child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        if (orderAmount > 0) {
+                          orderAmount--;
+                          widget.stock++;
+                        }
+                      });
+                    },
+                    padding: EdgeInsets.all(0),
+                    splashRadius: 20,
+                    icon: Icon(
+                      Icons.remove_circle_outline,
+                      size: 30,
+                    )),
+              ),
+              Container(
+                width: 80,
+                height: 35,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                        color: Theme.of(context).primaryColor, width: 3)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      // 'Amount of Your Order is ' +
+                      orderAmount.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                width: 50,
+                child: IconButton(
+                    padding: EdgeInsets.all(0),
+                    splashRadius: 20,
+                    onPressed: () {
+                      setState(() {
+                        orderAmount++;
+                        widget.stock--;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.add_circle_outline,
+                      size: 30,
+                    )),
+              ),
+            ],
+          ),
         ),
         ElevatedButton(
           onPressed: () {
@@ -191,7 +192,9 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
           child: Text("Add To Cart"),
         ),
-
+        SizedBox(
+          height: 75,
+        ),
       ],
     );
   }
