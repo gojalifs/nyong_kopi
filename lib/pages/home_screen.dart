@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(MediaQuery.of(context).size.width.toString()),
                     Text("Good $greetings, Lisa",
                         style: TextStyle(
                           fontFamily: 'baloo',
