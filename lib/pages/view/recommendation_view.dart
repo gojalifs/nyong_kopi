@@ -56,9 +56,10 @@ class RecommendationGridView extends StatelessWidget {
                           fontFamily: 'baloo',
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
-                          overflow: TextOverflow.ellipsis,
+                          
                         ),
                         textAlign: TextAlign.start,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Expanded(
